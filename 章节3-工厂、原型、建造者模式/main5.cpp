@@ -108,6 +108,56 @@ namespace _nmsp1
     }
   };
 
+  // 这种clone方法其实在某些情况下也会给开发带来便利
+  // 比如有如下需求，实现一个全局函数，要求用于创建怪物对象
+  // 同时要求创建的怪物类型要和所指向的（传递进来的）怪物类型类型相同，那这里就要用 dynamic_cast
+  // 进行类型判断，判断参数 pMonster 到底是什么类型
+  void Gbl_CreateMonster(Monster *pMonster)
+  {
+    Monster *ptmpobj = nullptr;
+    if (dynamic_cast<M_Undead *>(pMonster) != nullptr)
+    {
+      // 判断是亡灵类
+      ptmpobj = new M_Undead(300, 200, 43);
+    }
+    else if (dynamic_cast<M_Mechainc *>(pMonster) != nullptr)
+    {
+      // 判断为机械类怪物
+      ptmpobj = new M_Mechainc(2100, 3, 33);
+    }
+    else if (dynamic_cast<M_Element *>(pMonster) != nullptr)
+    {
+      // 判断为元素类怪物
+      ptmpobj = new M_Element(899, 200, 44);
+    }
+
+    if (ptmpobj != nullptr)
+    {
+      // ..........
+
+      // ..........
+      // 释放资源
+      delete ptmpobj;
+    }
+  }
+
+  // 如果Monster的每个子类都提供了clone方法，那么 Gbl_CreateMonster 函数的实现就简单多了
+  // 根本就不需要判断 pMonster 指向的子类的实际类型，直接可用利用已有的对象来创建新对象
+  void Gbl_CreateMonster2(Monster *pMonster)
+  {
+    Monster *ptmpobj = pMonster->clone();
+    // 根据已有对象直接创建新对象，不需要知道已有对象的类型
+
+    if (ptmpobj != nullptr)
+    {
+      // ..........
+
+      // ..........
+      // 释放资源
+      delete ptmpobj;
+    }
+  }
+
 }
 
 int main()
