@@ -301,3 +301,122 @@ int main()
 2. 变量的声明类型尽量是接口或者是抽象类。
 3. 任何类都不应该从具体类派生。
 4. 使用继承时尽量遵循里氏替换原则。
+
+一个违背依赖倒置原则的案例代码
+
+```c++
+namespace _nmsp1
+{
+    // 亡灵类
+    class M_Undead
+    {
+    public:
+        void getinfo()
+        {
+            std::cout << "亡灵类怪物" << std::endl;
+        }
+    };
+    
+    // 元素类
+    class M_Element
+    {
+    public:
+        void getinfo()
+        {
+            std::cout << "元素类怪物" << std::endl;
+        }
+    };
+    
+    // 机械类
+    class M_Mechanic
+    {
+    public:
+        void getinfo()
+        {
+            std::cout << "机械类怪物" << std::endl;
+        }
+    };
+    
+    // 战士角色
+    class F_Warrior
+    {
+    public:
+        void attack_enemy_undead(M_Undead* pobj)    // 攻击亡灵类怪物
+        {
+            // 进行攻击动作
+            pobj->getinfo();    // 调用亡灵类怪物类相关的函数
+        }
+        
+        // 现在是攻击亡灵类怪物，那我要是攻击元素类怪物，岂不是又得在这里新增函数，。。
+        void attack_enemy_element(M_Element* pobj)    // 攻击元素类怪物
+        {
+            // 进行攻击动作
+            pobj->getinfo();    // 调用元素类怪物类相关的函数
+        }
+    };
+}
+```
+
+
+
+![](../img/impicture_20220108_102539.png)
+
+将代码进行改进处理
+
+```c++
+namespace _nmsp2
+{
+    // 作为所有怪物类的父类（抽象层）
+    class Monster
+    {
+    public:
+        virtual void getinfo() = 0;
+        
+        virtual ~Monster() {}
+    };
+    
+    // 亡灵类
+    class M_Undead : public Monster
+    {
+    public:
+        void getinfo()
+        {
+            std::cout << "亡灵类怪物" << std::endl;
+        }
+    };
+    
+    // 元素类
+    class M_Element : public Monster
+    {
+    public:
+        void getinfo()
+        {
+            std::cout << "元素类怪物" << std::endl;
+        }
+    };
+    
+    // 机械类
+    class M_Mechanic : public Monster
+    {
+    public:
+        void getinfo()
+        {
+            std::cout << "机械类怪物" << std::endl;
+        }
+    };
+    
+    // 这里怪物类已经足以阐述依赖倒置原则，这里就不对战士类进行抽象了
+    // 战士角色
+    class F_Warrior
+    {
+    public:
+        void attack_enemy(Monster* pobj)    // 攻击怪物
+        {
+            // 进行攻击动作
+            pobj->getinfo();    // 调用怪物类相关的函数
+        }
+    };
+}
+```
+
+![](../img/impicture_20220108_103854.png)
