@@ -334,3 +334,77 @@ namespace _nmsp1
 ```
 
 ## 单件类定义、UML图及另外一种实现方式
+
+单例模式是 设计模式 中最简单的模式之一。通常，普通类的构造函数是公有的，外部类可以通过“new 构造函数()”来生成多个实例。但是，如果将类的构造函数设为私有的，外部类就无法调用该构造函数，也就无法生成多个实例。这时该类自身必须定义一个静态私有实例，并向外提供一个静态的公有函数用于创建或获取该静态私有实例。
+
+下面来分析其基本结构和实现方法。
+
+### 1. 单例模式的结构
+
+单例模式的主要角色如下。
+
+- 单例类：包含一个实例且能自行创建这个实例的类。
+- 访问类：使用单例的类。
+
+![](../img/impicture_20220111_165136.png)
+
+当然，如果不同指针，也可以有另外一种实现单例模式的代码
+
+```c++
+namespace _nmsp3
+{
+    class GameConfig
+    {
+    private:
+        GameConfig() {}
+        GameConfig(const GameConfig& tmpobj);   // 拷贝构造私有
+        GameConfig& operator=(const GameConfig& tmpobj);    // 拷贝赋值私有
+        ~GameConfig() {}
+        
+    public:
+        static GameConfig* getInstance()
+        {
+            return &m_instance;
+        }
+        
+    private:
+        static GameConfig m_instance;
+        
+    };
+    
+    GameConfig GameConfig::m_instance;
+}
+```
+
+**让getInstance返回局部静态变量的引用class GameConfig**，当然这个版本的单例模式也存在线程安全问题
+
+```c++
+namespace _nmsp4
+{
+    // 实现方法是让getInstance返回局部静态变量的引用class GameConfig
+    class GameConfig
+    {
+    private:
+        GameConfig() {}
+        GameConfig(const GameConfig& tmpobj);   // 拷贝构造私有
+        GameConfig& operator=(const GameConfig& tmpobj);    // 拷贝赋值私有
+        ~GameConfig() {}
+        
+    public:
+        static GameConfig& getInstance()
+        {
+            static GameConfig intance;
+            // 注意区别 函数第一次执行时被初始化的静态变量      与
+            //          通过编译期常量进行初始化的基本类型静态变量
+            
+            // 这里 instance 就是属于第一种情况。
+            // 这里的 instance 他不是基本类型，他是类类型
+            // 类类型静态变量他不一样，在这里你不调用getInstance这个静态变量instance就不会被初始化
+            
+            return intance;
+        }
+        
+    };
+}
+```
+
