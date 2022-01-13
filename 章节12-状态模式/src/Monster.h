@@ -10,6 +10,15 @@ public:
   ~Monster();
 
 public:
+  int getLife(); // 获取怪物血量
+
+  void setLife(int life); // 设置怪物血量
+
+  MonsterStatus *getCurrentStatus(); // 获取当前怪物所处状态
+
+  void setCurrentStatus(MonsterStatus *status); // 设置怪物当前状态
+
+public:
   void attacked(int pover); // 怪物被攻击
 
 private:
