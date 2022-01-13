@@ -21,9 +21,10 @@ void MonsterStatus_Feroc::attacked(int pover, Monster *monsobj)
     // 那这里就直接转到不安状态（不管实际上是不是不安状态，这里不管，交给不安状态去管）
 
     // 先删除当前状态
-    delete monsobj->getCurrentStatus();
-    // 将状态设置为不安状态
-    monsobj->setCurrentStatus(new MonsterStatus_Worr());
+    // delete monsobj->getCurrentStatus();
+    // // 将状态设置为不安状态
+    // monsobj->setCurrentStatus(new MonsterStatus_Worr());
+    monsobj->setCurrentStatus(MonsterStatus_Worr::getInstance());
     // 无条件交给不安状态进行受攻击处理
     monsobj->getCurrentStatus()->attacked(pover, monsobj);
   }
@@ -44,9 +45,10 @@ void MonsterStatus_Worr::attacked(int pover, Monster *monsobj)
     // 那这里就直接转到恐惧状态（不管实际上是不是恐惧状态，这里不管，交给恐惧状态去管）
 
     // 先删除当前状态
-    delete monsobj->getCurrentStatus();
-    // 将状态设置为恐惧状态
-    monsobj->setCurrentStatus(new MonsterStatus_Fear());
+    // delete monsobj->getCurrentStatus();
+    // // 将状态设置为恐惧状态
+    // monsobj->setCurrentStatus(new MonsterStatus_Fear());
+    monsobj->setCurrentStatus(MonsterStatus_Fear::getInstance());
     // 无条件交给恐惧状态进行受攻击处理
     monsobj->getCurrentStatus()->attacked(pover, monsobj);
   }
@@ -67,9 +69,10 @@ void MonsterStatus_Fear::attacked(int pover, Monster *monsobj)
     // 那这里就直接转到死亡状态（不管实际上是不是死亡状态，这里不管，交给死亡状态去管）
 
     // 先删除当前状态
-    delete monsobj->getCurrentStatus();
-    // 将状态设置为死亡状态
-    monsobj->setCurrentStatus(new MonsterStatus_Dead());
+    // delete monsobj->getCurrentStatus();
+    // // 将状态设置为死亡状态
+    // monsobj->setCurrentStatus(new MonsterStatus_Dead());
+    monsobj->setCurrentStatus(MonsterStatus_Dead::getInstance());
     // 无条件交给死亡状态进行受攻击处理
     monsobj->getCurrentStatus()->attacked(pover, monsobj);
   }
