@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -102,6 +103,48 @@ namespace _nmsp1
     FighterMemento *m_pfm; // 指向备忘录的指针
   };
 
+  // ---------------------------------------------------
+  // 支持多个快照的负责人（管理者）类
+  class FCareTaker2
+  {
+  public:
+    ~FCareTaker2()
+    {
+      for (std::vector<FighterMemento *>::iterator i = m_pfmContainer.begin(); i != m_pfmContainer.end(); ++i)
+      {
+        delete (*i);
+      }
+    }
+
+    // 保存指向备忘录对象的指针
+    void setMemento(FighterMemento *pfm)
+    {
+      m_pfmContainer.push_back(pfm);
+    }
+
+    // 获取指向备忘录对象的指针
+    FighterMemento *getMemento(int index)
+    {
+      auto iter = m_pfmContainer.begin();
+      for (int i = 0; i <= index; ++i)
+      {
+        if (i == index)
+        {
+          return *iter;
+        }
+        else
+        {
+          ++iter;
+        }
+      }
+      return NULL;
+    }
+
+  private:
+    // 存储备忘录对象指针的容器
+    vector<FighterMemento *> m_pfmContainer;
+  };
+
   void func()
   {
     Fighter *play = new Fighter(1000, 200, 56);
@@ -157,10 +200,33 @@ namespace _nmsp1
     delete fc;
   }
 
+  void func2()
+  {
+    Fighter *pf = new Fighter(1000, 232, 900);
+    FCareTaker2 *fc = new FCareTaker2();
+    fc->setMemento(pf->createMemento()); // 第一次做快照
+    pf->setToDead();
+    fc->setMemento(pf->createMemento()); // 第二次做快照
+    pf->display();
+    // 玩家当前状态：
+    // 血量 ------- 0
+    // 蓝量 ------- 200
+    // 攻击力 ----- 56
+
+    std::cout << "---------------------------------------------------" << std::endl;
+    // 恢复第一次快照内容
+    pf->restore(fc->getMemento(0));
+    pf->display();
+    // 玩家当前状态：
+    // 血量 ------- 1000
+    // 蓝量 ------- 200
+    // 攻击力 ----- 56
+  }
 }
 
 int main()
 {
+  // _nmsp1::func();
   _nmsp1::func();
 
   return 0;
